@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, LeafNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -51,3 +51,35 @@ class TestHTMLNode(unittest.TestCase):
         for case in cases:
             node = HTMLNode(**case["params"])
             self.assertEqual(node.props_to_html(), case["expected"])
+
+
+class TestLeafNode(unittest.TestCase):
+    def test_to_html(self):
+        cases = [
+            {
+                "params": {
+                    "tag": "a",
+                    "value": "This is a link",
+                    "props": {"href": "https://www.boot.dev"}
+                },
+                "expected": '<a href="https://www.boot.dev">This is a link</a>'
+            },
+            {
+                "params": {
+                    "tag": "a",
+                    "value": "This is a link with a target",
+                    "props": {"href": "https://www.boot.dev", "target": "_blank"}
+                },
+                "expected": '<a href="https://www.boot.dev" target="_blank">This is a link with a target</a>'
+            },
+        ]
+
+        for case in cases:
+            node = LeafNode(**case["params"])
+            self.assertEqual(node.to_html(), case["expected"])
+        
+    def test_to_html_raises_value_error(self):
+        node = LeafNode(value=None, tag="p")
+        with self.assertRaises(ValueError):
+            node.to_html()
+        
