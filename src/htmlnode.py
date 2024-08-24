@@ -38,8 +38,12 @@ class LeafNode(HTMLNode):
     def __init__(self, value: str, tag: str=None, props: dict=None):
         super().__init__(tag, value, None, props)
         
+    def __eq__(self, other: 'LeafNode') -> bool:
+        return self.value == other.value and self.tag == other.tag and self.props == other.props
+
+
     def to_html(self) -> str:
-        if self.value == "":
+        if self.value == "" and self.tag != "img":
             raise ValueError("LeafNode must have a value")
         if self.tag == "":
             return self.value
