@@ -58,7 +58,7 @@ class TestTextNodeToHTMLNode(unittest.TestCase):
 
     def test_text_node_to_html_node_throw_error(self):
         cases = [
-            TextNode("This is a text node", "unsupported"),
+            TextNode("> This is a text node", "blockquote"),
             # TextNode("This is a link text node", "link")
         ]
 
