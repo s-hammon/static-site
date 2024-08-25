@@ -5,6 +5,19 @@ from textnode import TextNode
 from nodetypes import TextType
 
 
+def markdown_to_blocks(markdown: str) -> List[str]:
+    blocks =  markdown.split("\n\n") 
+    return [ block.strip() for block in blocks if block.strip()]
+
+def text_to_textnodes(text: str) -> List[TextNode]:
+    nodes = [TextNode(text, TextType.TEXT)]
+    nodes = split_nodes_delimiter(nodes, "**", "bold")
+    nodes = split_nodes_delimiter(nodes, "*", "italic")
+    nodes = split_nodes_delimiter(nodes, "`", "code")
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+    return nodes 
+
 def split_nodes_delimiter(old_nodes: List[TextNode], delimiter: str, text_type: TextType) -> List[TextNode]:
     new_nodes = []
     for node in old_nodes:
@@ -12,9 +25,10 @@ def split_nodes_delimiter(old_nodes: List[TextNode], delimiter: str, text_type: 
             new_nodes.append(node)
             continue
 
-        split_nodes = node.text.split(delimiter)
-        if len(split_nodes) == 1:
+        if node.text.count(delimiter) % 2 != 0:
             raise ValueError("Invalid Markdown syntax")
+
+        split_nodes = node.text.split(delimiter)
         if len(split_nodes) != 3:
             new_nodes.append(node)
             continue
