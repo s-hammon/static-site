@@ -2,6 +2,8 @@ import unittest
 
 from converter import (
     split_nodes_delimiter,
+    split_nodes_image,
+    split_nodes_link,
     extract_markdown_images,
     extract_markdown_links
 ) 
@@ -124,3 +126,98 @@ class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
             print(f"Test case: {case['name']}")
             got = case["func"](case["params"])
             self.assertEqual(got, case["want"])
+    
+    def test_split_nodes_image_and_link(self):
+        rick_roll = "![rick roll](https://i.imgur.com/aKaOqIh.gif)"
+        obi_wan = "![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        cases = [
+            {
+                "name": "test single node, one image",
+                "func": split_nodes_image,
+                "params": [
+                    TextNode(
+                        f"This is text with a {rick_roll} image",
+                        "text"
+                    )
+                ],
+                "want": [
+                    TextNode("This is text with a ", "text"),
+                    TextNode("rick roll", "image", "https://i.imgur.com/aKaOqIh.gif"),
+                    TextNode(" image", "text")
+                ]
+            },
+            {
+                "name": "test single node, two images",
+                "func": split_nodes_image,
+                "params": [
+                    TextNode(
+                        f"This is text with a {rick_roll} and {obi_wan}", 
+                        "text"
+                    )
+                ],
+                "want": [
+                    TextNode("This is text with a ", "text"),
+                    TextNode("rick roll", "image", "https://i.imgur.com/aKaOqIh.gif"),
+                    TextNode(" and ", "text"),
+                    TextNode("obi wan", "image", "https://i.imgur.com/fJRm4Vk.jpeg")
+                ]
+            },
+            {
+                "name": "test single node, one image at start",
+                "func": split_nodes_image,
+                "params": [TextNode(f"{rick_roll} is an ancient meme", "text")],
+                "want": [
+                    TextNode("rick roll", "image", "https://i.imgur.com/aKaOqIh.gif"),
+                    TextNode(" is an ancient meme", "text")
+                ]
+            },
+            {
+                "name": "test two nodes, one image one text",
+                "func": split_nodes_image,
+                "params": [
+                    TextNode("This is normal text", "text"),
+                    TextNode(f"This is text with a {rick_roll} image", "text")
+                ],
+                "want": [
+                    TextNode("This is normal text", "text"),
+                    TextNode("This is text with a ", "text"),
+                    TextNode("rick roll", "image", "https://i.imgur.com/aKaOqIh.gif"),
+                    TextNode(" image", "text")
+                ]
+            },
+            {
+                "name": "test single node, one link",
+                "func": split_nodes_link,
+                "params": [
+                    TextNode(
+                        "This is text with a link [to boot dev](https://www.boot.dev)",
+                        "text"
+                    )
+                ],
+                "want": [
+                    TextNode("This is text with a link ", "text"),
+                    TextNode("to boot dev", "link", "https://www.boot.dev")
+                ]
+            },
+            {
+                "name": "test two nodes, one two links and one text",
+                "func": split_nodes_link,
+                "params": [
+                    TextNode("This is normal text", "text"),
+                    TextNode("This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)", "text")
+                ],
+                "want": [
+                    TextNode("This is normal text", "text"),
+                    TextNode("This is text with a link ", "text"),
+                    TextNode("to boot dev", "link", "https://www.boot.dev"),
+                    TextNode(" and ", "text"),
+                    TextNode("to youtube", "link", "https://www.youtube.com/@bootdotdev")
+                ]
+            },
+        ]
+
+        for case in cases:
+            print(f"Test case: {case['name']}")
+            got = case["func"](case["params"])
+            for g, w in zip(got, case["want"]):
+                self.assertEqual(g, w)
