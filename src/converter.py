@@ -5,10 +5,6 @@ from textnode import TextNode
 from nodetypes import TextType
 
 
-def markdown_to_blocks(markdown: str) -> List[str]:
-    blocks =  markdown.split("\n\n") 
-    return [ block.strip() for block in blocks if block.strip()]
-
 def text_to_textnodes(text: str) -> List[TextNode]:
     nodes = [TextNode(text, TextType.TEXT)]
     nodes = split_nodes_delimiter(nodes, "**", "bold")
