@@ -1,6 +1,10 @@
 import unittest
 
-from converter import split_nodes_delimiter
+from converter import (
+    split_nodes_delimiter,
+    extract_markdown_images,
+    extract_markdown_links
+) 
 from textnode import TextNode
 
 
@@ -60,3 +64,63 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         print("Test case: test invalid markdown syntax (bold)")
         with self.assertRaises(ValueError):
             split_nodes_delimiter([TextNode("This is text with a bold word", "text")], "**", "bold")
+
+
+class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
+    def test_extract_markdown_images_and_links(self):
+        cases = [
+            {
+                "name": "test extract markdown images",
+                "func": extract_markdown_images,
+                "params": "![alt text](https://www.boot.dev)",
+                "want": [("alt text", "https://www.boot.dev")]
+            },
+            {
+                "name": "test extract markdown images with multiple images",
+                "func": extract_markdown_images,
+                "params": "![alt text](https://www.boot.dev) ![alt text](https://www.boot.dev)",
+                "want": [("alt text", "https://www.boot.dev"), ("alt text", "https://www.boot.dev")]
+            },
+            {
+                "name": "test extract markdown images with multiple images and different alt text",
+                "func": extract_markdown_images,
+                "params": "![alt text](https://www.boot.dev) ![another alt text](https://www.boot.dev)",
+                "want": [("alt text", "https://www.boot.dev"), ("another alt text", "https://www.boot.dev")]
+            },
+            {
+                "name": "test extract markdown images with an image and a link, only return image",
+                "func": extract_markdown_images,
+                "params": "![alt text](https://www.boot.dev) ![another alt text](https://www.boot.dev)",
+                "params": "![alt text](https://www.boot.dev) [link text](https://www.boot.dev)",
+                "want": [("alt text", "https://www.boot.dev")]
+            },
+            {
+                "name": "test extract markdown links",
+                "func": extract_markdown_links,
+                "params": "[link text](https://www.boot.dev)",
+                "want": [("link text", "https://www.boot.dev")]
+            },
+            {
+                "name": "test extract markdown links with multiple links",
+                "func": extract_markdown_links,
+                "params": "[link text](https://www.boot.dev) [link text](https://www.boot.dev)",
+                "want": [("link text", "https://www.boot.dev"), ("link text", "https://www.boot.dev")]
+            },
+            {
+                "name": "test extract markdown links with multiple links and different link text",
+                "func": extract_markdown_links,
+                "params": "[link text](https://www.boot.dev) [another link text](https://www.boot.dev)",
+                "want": [("link text", "https://www.boot.dev"), ("another link text", "https://www.boot.dev")]
+            },
+            {
+                "name": "test extract markdown links with an image and a link, only return link",
+                "func": extract_markdown_links,
+                "params": "![alt text](https://www.boot.dev) [link text](https://www.boot.dev)",
+                "want": [("link text", "https://www.boot.dev")]
+            },
+        ]
+
+        for case in cases:
+            print(f"Test case: {case['name']}")
+            got = case["func"](case["params"])
+            self.assertEqual(got, case["want"])
