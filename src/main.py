@@ -1,9 +1,13 @@
 import os
 import shutil
 
+import app 
+
 def main():
     refresh_dir('public')
     copy_static_to_public()
+
+    app.run()
 
 def copy_static_to_public():
     if not os.path.exists('static'):
