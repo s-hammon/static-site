@@ -28,6 +28,21 @@ class TestSplitNodesDelimiter(unittest.TestCase):
                 ]
             },
             {
+                "name": "test text node with two bold words",
+                "params": {
+                    "old_nodes": [TextNode("This is text with a **bold word** here and a **bold word** there", "text")],
+                    "delimiter": "**",
+                    "text_type": "bold",
+                },
+                "want": [
+                    TextNode("This is text with a ", "text"),
+                    TextNode("bold word", "bold"),
+                    TextNode(" here and a ", "text"),
+                    TextNode("bold word", "bold"),
+                    TextNode(" there", "text")
+                ]
+            },
+            {
                 "name": "test bold node",
                 "params": {
                     "old_nodes": [TextNode("**bold only**", "bold")],
@@ -70,14 +85,12 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         ]
 
         for case in cases:
-            print(f"Test case: {case['name']}")
             got = split_nodes_delimiter(**case["params"])
             for g, w in zip(got, case["want"]):
-                self.assertEqual(g, w)
+                self.assertEqual(g, w, f"\n\tcase: {case['name']}")
 
     def test_split_nodes_delimiter_raise_error(self):
-        print("Test case: test invalid markdown syntax (bold)")
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValueError, msg="case: test invalid markdown syntax (bold)"):
             split_nodes_delimiter([TextNode("This is text with a **bold word", "text")], "**", "bold")
 
 
@@ -136,9 +149,8 @@ class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
         ]
 
         for case in cases:
-            print(f"Test case: {case['name']}")
             got = case["func"](case["params"])
-            self.assertEqual(got, case["want"])
+            self.assertEqual(got, case["want"], f"\n\tcase: {case['name']}")
     
     def test_split_nodes_image_and_link(self):
         rick_roll = "![rick roll](https://i.imgur.com/aKaOqIh.gif)"
@@ -230,10 +242,9 @@ class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
         ]
 
         for case in cases:
-            print(f"Test case: {case['name']}")
             got = case["func"](case["params"])
             for g, w in zip(got, case["want"]):
-                self.assertEqual(g, w)
+                self.assertEqual(g, w, f"\n\tcase: {case['name']}")
         
 
 class TestTextToTextNodes(unittest.TestCase):

@@ -38,10 +38,9 @@ class TestMarkdownToBlocks(unittest.TestCase):
         ]
 
         for case in cases:
-            print(f"Test case: {case['name']}")
             got = markdown_to_blocks(case["params"])
             for g, w in zip(got, case["want"]):
-                self.assertEqual(g, w)
+                self.assertEqual(g, w, f"\n\tcase: {case['name']}")
         
 
 class TestBlockToBlockType(unittest.TestCase):
@@ -227,5 +226,4 @@ class TestMarkdownToHTMLNode(unittest.TestCase):
                 want = f.read()
 
             got = markdown_to_html_node(markdown)
-            print(got.to_html())
             self.assertEqual(got.to_html(), want)
