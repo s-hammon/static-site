@@ -37,6 +37,9 @@ class ParentNode(HTMLNode):
 class LeafNode(HTMLNode):
     def __init__(self, value: str, tag: str=None, props: dict=None):
         super().__init__(tag, value, None, props)
+    
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.value}, {self.tag}, {self.props})"
         
     def __eq__(self, other: 'LeafNode') -> bool:
         return self.value == other.value and self.tag == other.tag and self.props == other.props

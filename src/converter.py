@@ -30,6 +30,8 @@ def split_nodes_delimiter(old_nodes: List[TextNode], delimiter: str, text_type: 
             continue
 
         for i, split_node in enumerate(split_nodes):
+            if split_node == "":
+                continue
             if i % 2 == 0:
                 new_nodes.append(TextNode(split_node, node.text_type.value))
             else:

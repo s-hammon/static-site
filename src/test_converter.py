@@ -55,6 +55,18 @@ class TestSplitNodesDelimiter(unittest.TestCase):
                     TextNode(" word", "text")
                 ]
             },
+            {
+                "name": "test italics at end of paragraph",
+                "params": {
+                    "old_nodes": [TextNode("This is a paragraph with *italics*", "text")],
+                    "delimiter": "*",
+                    "text_type": "italic",
+                },
+                "want": [
+                    TextNode("This is a paragraph with ", "text"),
+                    TextNode("italics", "italic"),
+                ]
+            },
         ]
 
         for case in cases:
