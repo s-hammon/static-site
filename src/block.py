@@ -7,57 +7,59 @@ from textnode import text_node_to_html_node
 
 def markdown_to_html_node(markdown: str) -> HTMLNode:
     blocks = markdown_to_blocks(markdown)
-    nodes = []
-    for block in blocks:
-        match block_to_block_type(block):
-            case "heading":
-                tag, value = header_markdown_to_html(block)
-                children = []
-                for node in text_to_textnodes(value):
-                    children.append(text_node_to_html_node(node))
-                
-                nodes.append(ParentNode(children, tag))
-
-            case "code":
-                child = LeafNode(block.replace("```", ""), "code")
-                nodes.append(ParentNode([child], "pre"))
-
-            case "quote":
-                children = []
-                for node in text_to_textnodes(block.replace("> ", "")):
-                    children.append(text_node_to_html_node(node))
-                nodes.append(ParentNode(children, "blockquote"))
-
-            case "unordered_list":
-                lines = [ line[2:] for line in block.splitlines()]
-                children = []
-                for line in lines:
-                    grandchildren = []
-                    for node in text_to_textnodes(line):
-                        grandchildren.append(text_node_to_html_node(node))
-                    children.append(ParentNode(grandchildren, "li"))
-
-                nodes.append(ParentNode(children, "ul"))
-
-            case "ordered_list":
-                lines = [ re.sub(r"^\d+\.\s*", "", line) for line in block.splitlines() ]
-                children = []
-                for line in lines:
-                    grandchildren = []
-                    for node in text_to_textnodes(line):
-                        grandchildren.append(text_node_to_html_node(node))
-                    children.append(ParentNode(grandchildren, "li"))
-        
-                nodes.append(ParentNode(children, "ol"))
-
-            case "paragraph":
-                children = []
-                for node in text_to_textnodes(block):
-                    children.append(text_node_to_html_node(node))
-
-                nodes.append(ParentNode(children, "p")) 
+    nodes = [ convert_block_to_html_node(block) for block in blocks ]
 
     return ParentNode(nodes, "div") 
+
+def convert_block_to_html_node(block: str) -> HTMLNode:
+    block_type = block_to_block_type(block)
+
+    match block_type:
+        case "heading":
+            tag, value = header_markdown_to_html(block)
+            return ParentNode(
+                [ text_node_to_html_node(node) for node in text_to_textnodes(value) ],
+                tag
+            )
+        case "code":
+            content = block.replace("```", "")
+            return ParentNode([LeafNode(content, "code")], "pre")
+        case "quote":
+            content = block.replace("> ", "")
+            return ParentNode(
+                [ text_node_to_html_node(node) for node in text_to_textnodes(content) ],
+                "blockquote"
+            )
+        case "unordered_list":
+            lines = [ line[2:] for line in block.splitlines() ]
+            return ParentNode(
+                [ 
+                    ParentNode(
+                        [ text_node_to_html_node(node) for node in text_to_textnodes(line) ],
+                        "li"
+                    ) 
+                    for line in lines
+                ],
+                "ul"
+            )
+        case "ordered_list":
+            lines = [ re.sub(r"^\d+\.\s*", "", line) for line in block.splitlines() ]
+            return ParentNode(
+                [ 
+                    ParentNode(
+                        [ text_node_to_html_node(node) for node in text_to_textnodes(line) ],
+                        "li"
+                    ) 
+                    for line in lines
+                ],
+                "ol"
+            )
+        case "paragraph":
+            return ParentNode(
+                [ text_node_to_html_node(node) for node in text_to_textnodes(block) ],
+                "p"
+            )
+
 
 def markdown_to_blocks(markdown: str) -> List[str]:
     blocks =  markdown.split("\n\n") 
@@ -85,8 +87,9 @@ def check_ordered_list(lines: List[str]) -> bool:
 def header_markdown_to_html(markdown: str) -> Tuple[str, str]:
     match = re.match(r"^(#{1,6}) (.*)", markdown)
 
-    depth = len(match.group(1))
-    if match and depth <= 6:
-        return f"h{depth}", match.group(2)
+    if match:
+        depth = len(match.group(1))
+        if depth <= 6:
+            return f"h{depth}", match.group(2)
 
     return None

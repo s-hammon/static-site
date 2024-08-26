@@ -12,36 +12,47 @@ def extract_title(markdown: str) -> str:
     blocks = markdown_to_blocks(markdown)
     for block in blocks:
         if block_to_block_type(block) == "heading":
-            if header_markdown_to_html(block)[0] == "h1":
-                return header_markdown_to_html(block)[1]
+            header = header_markdown_to_html(block)
+            if header[0] == "h1":
+                return header[1]
     
     raise ValueError("No title found in markdown")
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path) -> None:
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
-    with open(from_path, 'r') as f:
-        markdown = f.read()
 
-
+    markdown = load_file(from_path)
     html = markdown_to_html_node(markdown).to_html()
     title = extract_title(markdown)
 
-    with open(template_path, 'r') as f:
-        template = f.read().replace("{{ Title }}", title).replace("{{ Content }}", html)
+    template = load_file(template_path)
+    content = template.replace("{{ Title }}", title).replace("{{ Content }}", html)
 
-    with open(dest_path, 'w') as f:
-        f.write(template)
+    save_file(dest_path, content)
 
-def generate_pages_recursive(dir_path_content, template_path, dir_path_public):
+def generate_pages_recursive(dir_path_content: str, template_path: str, dir_path_public: str) -> None:
+    check_path(dir_path_public)
     for file in os.listdir(dir_path_content):
-        path = os.path.join(dir_path_content, file)
-        if os.path.isdir(path):
-            generate_pages_recursive(path, template_path, os.path.join(dir_path_public, file))
+        content_path = os.path.join(dir_path_content, file)
+        public_path = os.path.join(dir_path_public, file.replace(".md", ".html"))
+        
+        if os.path.isdir(content_path):
+            generate_pages_recursive(content_path, template_path, os.path.join(dir_path_public, file))
         else:
-            if not os.path.exists(dir_path_public):
-                os.mkdir(dir_path_public)
-            if file.endswith(".md"):
-                generate_page(path, template_path, os.path.join(dir_path_public, file.replace(".md", ".html")))
+            generate_page(content_path, template_path, public_path)
+
+def check_path(path: str) -> None:
+    if not os.path.exists(path):
+        os.mkdir(path)
+        print(f"Directory {path} created")
+
+def load_file(path: str) -> str:
+    with open(path, 'r') as f:
+        return f.read()
+
+def save_file(path: str, content: str) -> None:
+    with open(path, 'w') as f:
+        f.write(content)
 
 def run():
     try:
