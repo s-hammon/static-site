@@ -10,3 +10,4 @@ class TextType(Enum):
     IMAGE = "image"
     BLOCKQUOTE = "blockquote"
     STRIKE = "strike"
+    SPOILER = "spoiler"

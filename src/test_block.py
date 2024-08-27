@@ -207,8 +207,7 @@ class TestMarkdownToHTMLNode(unittest.TestCase):
 
         for case in cases:
             got =  markdown_to_html_node(case["param"])
-            print(got.to_html())
-            self.assertEqual(got.to_html(), case["want"])
+            self.assertEqual(got.to_html(), case["want"], f"case: {case['param']}")
 
     def test_markdown_to_html_node_from_file(self):
         cases = [
