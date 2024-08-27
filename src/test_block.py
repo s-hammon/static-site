@@ -1,7 +1,6 @@
 import unittest
 
 from block import markdown_to_blocks, block_to_block_type, markdown_to_html_node
-from htmlnode import HTMLNode, LeafNode
 
 class TestMarkdownToBlocks(unittest.TestCase):
     def test_markdown_to_blocks(self):

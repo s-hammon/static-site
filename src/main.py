@@ -9,7 +9,7 @@ def main():
 
     app.run()
 
-def copy_static_to_public():
+def copy_static_to_public() -> None:
     if not os.path.exists('static'):
         raise FileNotFoundError('static directory not found')
     if not os.path.exists('public'):
@@ -28,7 +28,7 @@ def copy_static_to_public():
 
     copy('static', 'public')
     
-def refresh_dir(dir: str):
+def refresh_dir(dir: str) -> None:
     if os.path.exists(dir):
         print(f'Clearing {dir}')
         for file in os.listdir(dir):

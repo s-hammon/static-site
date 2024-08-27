@@ -18,7 +18,7 @@ def extract_title(markdown: str) -> str:
     
     raise ValueError("No title found in markdown")
 
-def generate_page(from_path, template_path, dest_path) -> None:
+def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     markdown = load_file(from_path)

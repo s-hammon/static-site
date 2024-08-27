@@ -1,5 +1,5 @@
 import re
-from typing import List
+from typing import Callable, List
 
 from textnode import TextNode
 from nodetypes import TextType
@@ -10,8 +10,8 @@ def text_to_textnodes(text: str) -> List[TextNode]:
     nodes = split_nodes_delimiter(nodes, "**", "bold")
     nodes = split_nodes_delimiter(nodes, "*", "italic")
     nodes = split_nodes_delimiter(nodes, "`", "code")
-    nodes = split_nodes_image(nodes)
-    nodes = split_nodes_link(nodes)
+    nodes = split_nodes_embed(nodes, extract_markdown_images, "![{}]({})", "image")
+    nodes = split_nodes_embed(nodes, extract_markdown_links, "[{}]({})", "link")
     return nodes 
 
 def split_nodes_delimiter(old_nodes: List[TextNode], delimiter: str, text_type: TextType) -> List[TextNode]:
@@ -45,53 +45,28 @@ def split_nodes_delimiter(old_nodes: List[TextNode], delimiter: str, text_type: 
 
     return new_nodes
 
-def split_nodes_image(old_nodes: List[TextNode]):
+def split_nodes_embed(old_nodes: List[TextNode], extract_func: Callable[[str], List[tuple]], md_format: str, text_type: str):
     new_nodes = []
     for node in old_nodes:
         if node.text_type != TextType.TEXT:
             new_nodes.append(node)
             continue
 
-        images = extract_markdown_images(node.text)
-        if len(images) == 0:
+        embeds = extract_func(node.text)
+        if len(embeds) == 0:
             new_nodes.append(node)
             continue
-        
+
         text = node.text
-        for image in images:
-            image_md = f"![{image[0]}]({image[1]})"
-            predicate = text.split(image_md)[0]
+        for embed in embeds:
+            embed_md = md_format.format(embed[0], embed[1])
+            predicate = text.split(embed_md)[0]
             if predicate:
                 new_nodes.append(TextNode(predicate, node.text_type.value))
                 text = text.replace(predicate, "")
             
-            new_nodes.append(TextNode(image[0], "image", image[1]))
-            text = text.replace(image_md, "")
-
-    return new_nodes
-
-def split_nodes_link(old_nodes: List[TextNode]):
-    new_nodes = []
-    for node in old_nodes:
-        if node.text_type != TextType.TEXT:
-            new_nodes.append(node)
-            continue
-
-        links = extract_markdown_links(node.text)
-        if len(links) == 0:
-            new_nodes.append(node)
-            continue
-        
-        text = node.text
-        for link in links:
-            link_md = f"[{link[0]}]({link[1]})"
-            predicate = text.split(link_md)[0]
-            if predicate:
-                new_nodes.append(TextNode(predicate, node.text_type.value))
-                text = text.replace(predicate, "")
-            
-            new_nodes.append(TextNode(link[0], "link", link[1]))
-            text = text.replace(link_md, "")
+            new_nodes.append(TextNode(embed[0], text_type, embed[1]))
+            text = text.replace(embed_md, "")
 
     return new_nodes
 

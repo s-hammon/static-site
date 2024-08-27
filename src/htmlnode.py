@@ -1,20 +1,20 @@
-from typing import List
+from typing import Dict, List
 
 class HTMLNode:
     def __init__(self, tag: str=None, value: str=None, children: list=None, props: dict=None):
-        self.tag = tag or ""
-        self.value = value or ""
+        self.tag: str = tag or ""
+        self.value: str = value or ""
         self.children: list['HTMLNode'] = children or []
-        self.props = props or {}
+        self.props: Dict[str: str] = props or {}
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.tag}, {self.value}, {self.children}, {self.props})"
     
-    def to_html(self):
+    def to_html(self) -> str:
         raise NotImplementedError()
         
     def props_to_html(self) -> str:
-        return " ".join([f'{key}="{value}"' for key, value in self.props.items()])
+        return " ".join([ f'{key}="{value}"' for key, value in self.props.items() ])
 
 
 class ParentNode(HTMLNode):

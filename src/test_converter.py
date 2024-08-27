@@ -2,8 +2,7 @@ import unittest
 
 from converter import (
     split_nodes_delimiter,
-    split_nodes_image,
-    split_nodes_link,
+    split_nodes_embed,
     text_to_textnodes,
     extract_markdown_images,
     extract_markdown_links
@@ -152,19 +151,18 @@ class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
             got = case["func"](case["params"])
             self.assertEqual(got, case["want"], f"\n\tcase: {case['name']}")
     
-    def test_split_nodes_image_and_link(self):
+    def test_split_nodes_embed(self):
         rick_roll = "![rick roll](https://i.imgur.com/aKaOqIh.gif)"
         obi_wan = "![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
         cases = [
             {
                 "name": "test single node, one image",
-                "func": split_nodes_image,
-                "params": [
-                    TextNode(
-                        f"This is text with a {rick_roll} image",
-                        "text"
-                    )
-                ],
+                "params": {
+                    "old_nodes": [TextNode(f"This is text with a {rick_roll} image", "text")],
+                    "extract_func": extract_markdown_images,
+                    "md_format": "![{}]({})",
+                    "text_type": "image"
+                },
                 "want": [
                     TextNode("This is text with a ", "text"),
                     TextNode("rick roll", "image", "https://i.imgur.com/aKaOqIh.gif"),
@@ -173,13 +171,12 @@ class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
             },
             {
                 "name": "test single node, two images",
-                "func": split_nodes_image,
-                "params": [
-                    TextNode(
-                        f"This is text with a {rick_roll} and {obi_wan}", 
-                        "text"
-                    )
-                ],
+                "params": {
+                    "old_nodes": [TextNode(f"This is text with a {rick_roll} and {obi_wan}", "text")],
+                    "extract_func": extract_markdown_images,
+                    "md_format": "![{}]({})",
+                    "text_type": "image"
+                },
                 "want": [
                     TextNode("This is text with a ", "text"),
                     TextNode("rick roll", "image", "https://i.imgur.com/aKaOqIh.gif"),
@@ -189,8 +186,12 @@ class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
             },
             {
                 "name": "test single node, one image at start",
-                "func": split_nodes_image,
-                "params": [TextNode(f"{rick_roll} is an ancient meme", "text")],
+                "params": {
+                    "old_nodes": [TextNode(f"{rick_roll} is an ancient meme", "text")],
+                    "extract_func": extract_markdown_images,
+                    "md_format": "![{}]({})",
+                    "text_type": "image"
+                },
                 "want": [
                     TextNode("rick roll", "image", "https://i.imgur.com/aKaOqIh.gif"),
                     TextNode(" is an ancient meme", "text")
@@ -198,11 +199,15 @@ class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
             },
             {
                 "name": "test two nodes, one image one text",
-                "func": split_nodes_image,
-                "params": [
-                    TextNode("This is normal text", "text"),
-                    TextNode(f"This is text with a {rick_roll} image", "text")
-                ],
+                "params": {
+                    "old_nodes": [
+                        TextNode("This is normal text", "text"),
+                        TextNode(f"This is text with a {rick_roll} image", "text")
+                    ],
+                    "extract_func": extract_markdown_images,
+                    "md_format": "![{}]({})",
+                    "text_type": "image"
+                },
                 "want": [
                     TextNode("This is normal text", "text"),
                     TextNode("This is text with a ", "text"),
@@ -212,25 +217,28 @@ class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
             },
             {
                 "name": "test single node, one link",
-                "func": split_nodes_link,
-                "params": [
-                    TextNode(
-                        "This is text with a link [to boot dev](https://www.boot.dev)",
-                        "text"
-                    )
-                ],
+                "params": {
+                    "old_nodes": [TextNode(f"This is text with a [link](https://www.boot.dev)", "text")],
+                    "extract_func": extract_markdown_links,
+                    "md_format": "[{}]({})",
+                    "text_type": "link"
+                },
                 "want": [
-                    TextNode("This is text with a link ", "text"),
-                    TextNode("to boot dev", "link", "https://www.boot.dev")
+                    TextNode("This is text with a ", "text"),
+                    TextNode("link", "link", "https://www.boot.dev")
                 ]
             },
             {
                 "name": "test two nodes, one two links and one text",
-                "func": split_nodes_link,
-                "params": [
-                    TextNode("This is normal text", "text"),
-                    TextNode("This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)", "text")
-                ],
+                "params": {
+                    "old_nodes": [
+                        TextNode("This is normal text", "text"),
+                        TextNode("This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)", "text")
+                    ],
+                    "extract_func": extract_markdown_links,
+                    "md_format": "[{}]({})",
+                    "text_type": "link"
+                },
                 "want": [
                     TextNode("This is normal text", "text"),
                     TextNode("This is text with a link ", "text"),
@@ -238,14 +246,14 @@ class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
                     TextNode(" and ", "text"),
                     TextNode("to youtube", "link", "https://www.youtube.com/@bootdotdev")
                 ]
-            },
+            }
         ]
 
         for case in cases:
-            got = case["func"](case["params"])
+            got = split_nodes_embed(**case["params"])
             for g, w in zip(got, case["want"]):
                 self.assertEqual(g, w, f"\n\tcase: {case['name']}")
-        
+
 
 class TestTextToTextNodes(unittest.TestCase):
     def test_text_to_textnodes(self):
@@ -265,5 +273,3 @@ class TestTextToTextNodes(unittest.TestCase):
         got = text_to_textnodes(text)
         for g, w in zip(got, want):
             self.assertEqual(g, w)
-
-
