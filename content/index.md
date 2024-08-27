@@ -19,6 +19,8 @@
 4. Gandalf
 5. Faramir
 
+999. ~~Gollum~~ Wormtail
+
 Here's what `elflang` looks like (the perfect coding language):
 
 ```

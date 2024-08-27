@@ -9,3 +9,4 @@ class TextType(Enum):
     LINK = "link"
     IMAGE = "image"
     BLOCKQUOTE = "blockquote"
+    STRIKE = "strike"

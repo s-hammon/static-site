@@ -16,8 +16,9 @@ Thank you to the team at [boot.dev](https://boot.dev) for this guided project--i
 ## To-Do
 
 1. Create Makefile
-2. Sharpen Markdown comprehension for things like `***bold and italics***`, `tables` (*ooh la la...*)
+2. Sharpen Markdown comprehension for things like `***bold and italics***`, `~~strikethrough~~`, `tables` (*ooh la la...*)
 3. Refactor src code
 4. Implement >!spoilers!<
-5. ???
-6. PROFIT
+5. Implement <automatic_links>
+6. ???
+7. PROFIT

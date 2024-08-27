@@ -81,6 +81,17 @@ class TestSplitNodesDelimiter(unittest.TestCase):
                     TextNode("italics", "italic"),
                 ]
             },
+            {
+                "name": "test strike through sentence",
+                "params": {
+                    "old_nodes": [TextNode("~~This is a strike through sentence~~", "text")],
+                    "delimiter": "~~",
+                    "text_type": "strike",
+                },
+                "want": [
+                    TextNode("This is a strike through sentence", "strike"),
+                ]
+            },
         ]
 
         for case in cases:

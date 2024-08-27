@@ -37,5 +37,7 @@ def text_node_to_html_node(text_node: TextNode) -> LeafNode:
             return LeafNode(value, "a", {"href": url})
         case "image":
             return LeafNode("", "img", {"src": url, "alt": value})
+        case "strike": 
+            return LeafNode(value, "s", None)
         case _:
             raise ValueError("Unsupported text type")

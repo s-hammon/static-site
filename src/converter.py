@@ -7,11 +7,12 @@ from nodetypes import TextType
 
 def text_to_textnodes(text: str) -> List[TextNode]:
     nodes = [TextNode(text, TextType.TEXT)]
-    nodes = split_nodes_delimiter(nodes, "**", "bold")
-    nodes = split_nodes_delimiter(nodes, "*", "italic")
-    nodes = split_nodes_delimiter(nodes, "`", "code")
-    nodes = split_nodes_embed(nodes, extract_markdown_images, "![{}]({})", "image")
-    nodes = split_nodes_embed(nodes, extract_markdown_links, "[{}]({})", "link")
+    nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
+    nodes = split_nodes_delimiter(nodes, "*", TextType.ITALIC)
+    nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
+    nodes = split_nodes_delimiter(nodes, "~~", TextType.STRIKE)
+    nodes = split_nodes_embed(nodes, extract_markdown_images, "![{}]({})", TextType.IMAGE)
+    nodes = split_nodes_embed(nodes, extract_markdown_links, "[{}]({})", TextType.LINK)
     return nodes 
 
 def split_nodes_delimiter(old_nodes: List[TextNode], delimiter: str, text_type: TextType) -> List[TextNode]:
@@ -45,7 +46,7 @@ def split_nodes_delimiter(old_nodes: List[TextNode], delimiter: str, text_type: 
 
     return new_nodes
 
-def split_nodes_embed(old_nodes: List[TextNode], extract_func: Callable[[str], List[tuple]], md_format: str, text_type: str):
+def split_nodes_embed(old_nodes: List[TextNode], extract_func: Callable[[str], List[tuple]], md_format: str, text_type: TextType):
     new_nodes = []
     for node in old_nodes:
         if node.text_type != TextType.TEXT:
@@ -84,5 +85,7 @@ def extract_delimited(text: str, delimiter: str) -> List[str]:
             return re.findall(r"(?<!\*)\*([^*]+)\*(?!\*)", text)
         case "`":
             return re.findall(r"`([^`]+)`", text)
+        case "~~":
+            return re.findall(r"~~(.*?)~~", text)
         case _:
             raise ValueError("Invalid delimiter")
