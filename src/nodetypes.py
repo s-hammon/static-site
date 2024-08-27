@@ -6,6 +6,6 @@ class TextType(Enum):
     BOLD = "bold"
     ITALIC = "italic"
     CODE = "code"
-    LINKE = "link"
+    LINK = "link"
     IMAGE = "image"
     BLOCKQUOTE = "blockquote"
