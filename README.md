@@ -4,7 +4,7 @@ I made an SSG in Python which will dynamically create webpages from Markdown. It
 
 I also made this project using *only* the standard library--hence, why you see **no requirements.txt** file in the basedir.
 
-All you need is Python(3.6+) to run this on your machine: simply `clone` the repo, `cd static-site`, and:
+All you need is Python(3.10+) to run this on your machine: simply `clone` the repo, `cd static-site`, and:
 
 * (*Linux*) `./main.sh`
 * (*Windows*) `python src/main.py && cd public && python3 -m http.server 8888`
