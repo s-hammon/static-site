@@ -6,25 +6,16 @@ from src.app import extract_title
 class TestExtractTitle(unittest.TestCase):
     def test_extract_title(self):
         cases = [
-            {
-                "input": "# Hello World",
-                "expected": "Hello World"
-            },
-            {
-                "input": "# Hello World\n\n## Subtitle",
-                "expected": "Hello World"
-            },
-            {
-                "input": "## Subtitle\n\n# Hello World",
-                "expected": "Hello World"
-            },
+            {"input": "# Hello World", "expected": "Hello World"},
+            {"input": "# Hello World\n\n## Subtitle", "expected": "Hello World"},
+            {"input": "## Subtitle\n\n# Hello World", "expected": "Hello World"},
             {
                 "input": "## Subtitle\n\n# Hello World\n\n## Subtitle",
-                "expected": "Hello World"
+                "expected": "Hello World",
             },
             {
                 "input": "## Subtitle\n\n# Subtitle\n\n## Subtitle\n\n# Hello World",
-                "expected": "Subtitle"
+                "expected": "Subtitle",
             },
         ]
 

@@ -2,28 +2,29 @@ import unittest
 
 from src.block import markdown_to_blocks, block_to_block_type, markdown_to_html_node
 
+
 class TestMarkdownToBlocks(unittest.TestCase):
     def test_markdown_to_blocks(self):
         cases = [
             {
                 "name": "test 1 block with leading whitespace",
                 "params": "   this is a paragraph wiht leading whitespace",
-                "want": ["this is a paragraph wiht leading whitespace"]
+                "want": ["this is a paragraph wiht leading whitespace"],
             },
             {
                 "name": "test 1 block with leading and trailing whitespace",
                 "params": "   this is a paragraph wiht leading and trailing whitespace   ",
-                "want": ["this is a paragraph wiht leading and trailing whitespace"]
+                "want": ["this is a paragraph wiht leading and trailing whitespace"],
             },
             {
                 "name": "test 2 blocks, separated by 3 newlines",
                 "params": "this is a paragraph\n\n\nthis is another paragraph",
-                "want": ["this is a paragraph", "this is another paragraph"]
+                "want": ["this is a paragraph", "this is another paragraph"],
             },
             {
                 "name": "test 2 blocks, separatedy by 4 newlines",
                 "params": "this is a paragraph\n\n\n\nthis is another paragraph",
-                "want": ["this is a paragraph", "this is another paragraph"]
+                "want": ["this is a paragraph", "this is another paragraph"],
             },
             {
                 "name": "test 3 blocks",
@@ -31,8 +32,8 @@ class TestMarkdownToBlocks(unittest.TestCase):
                 "want": [
                     "# This is a heading",
                     "This is a paragraph of text. It has some **bold** and *italic* words inside of it.",
-                    "* This is the first list item in a list block\n* This is a list item\n* This is another list item"
-                ]
+                    "* This is the first list item in a list block\n* This is a list item\n* This is another list item",
+                ],
             },
         ]
 
@@ -40,7 +41,7 @@ class TestMarkdownToBlocks(unittest.TestCase):
             got = markdown_to_blocks(case["params"])
             for g, w in zip(got, case["want"]):
                 self.assertEqual(g, w, f"\n\tcase: {case['name']}")
-        
+
 
 class TestBlockToBlockType(unittest.TestCase):
     def test_block_to_block_type(self):
@@ -48,102 +49,102 @@ class TestBlockToBlockType(unittest.TestCase):
             {
                 "name": "test heading block",
                 "params": "# This is a heading",
-                "want": "heading"
+                "want": "heading",
             },
             {
                 "name": "test heading6 block",
                 "params": "###### This is a heading",
-                "want": "heading"
+                "want": "heading",
             },
             {
                 "name": "test paragraph block, starts with seven # characters",
                 "params": "####### This is a paragraph",
-                "want": "paragraph"
+                "want": "paragraph",
             },
             {
                 "name": "test paragraph block, starts with a # without a space",
                 "params": "#This is a paragraph",
-                "want": "paragraph"
+                "want": "paragraph",
             },
             {
                 "name": "test code block",
                 "params": "```this is a code block```",
-                "want": "code"
+                "want": "code",
             },
             {
                 "name": "test code block, contains ` characters",
                 "params": "```this is a code block with ` characters```",
-                "want": "code"
+                "want": "code",
             },
             {
                 "name": "test paragraph block, starts with ```",
                 "params": "```This is a paragraph",
-                "want": "paragraph"
+                "want": "paragraph",
             },
             {
                 "name": "test single line quote block",
                 "params": "> This is a quote",
-                "want": "quote"
+                "want": "quote",
             },
             {
                 "name": "test 3 line quote block",
                 "params": "> This is a quote\n> with multiple\n> lines",
-                "want": "quote"
+                "want": "quote",
             },
             {
                 "name": "test paragraph block, starts with > without a space",
                 "params": ">This is a paragraph",
-                "want": "paragraph"
+                "want": "paragraph",
             },
             {
                 "name": "test paragraph block, second line starts without a >",
                 "params": "> This is a paragraph\nBecause this line does not start with a '>' character",
-                "want": "paragraph"
+                "want": "paragraph",
             },
             {
                 "name": "test unordered list, using *",
                 "params": "* This is a list item\n* This is another list item",
-                "want": "unordered_list"
+                "want": "unordered_list",
             },
             {
                 "name": "test unordered list, using -",
                 "params": "- This is a list item\n- This is another list item",
-                "want": "unordered_list"
+                "want": "unordered_list",
             },
             {
                 "name": "test unordered list, using both * and -",
                 "params": "* This is a list item\n- This is another list item",
-                "want": "unordered_list"
+                "want": "unordered_list",
             },
             {
                 "name": "test paragraph block, starts with * without a space",
                 "params": "*This is a paragraph",
-                "want": "paragraph"
+                "want": "paragraph",
             },
             {
                 "name": "test paragraph block, second line starts without a *",
                 "params": "* This is a paragraph\nBecause this line does not start with a '*' character",
-                "want": "paragraph"
+                "want": "paragraph",
             },
             {
                 "name": "test paragraph block, 1st & 3rd line starts with - ",
                 "params": "- This is a paragraph\nThis is not a list item\n- This is another list item",
-                "want": "paragraph"
+                "want": "paragraph",
             },
             {
                 "name": "test ordered list, three items",
                 "params": "1. This is a list item\n2. This is another list item\n3. This is a third list item",
-                "want": "ordered_list"
+                "want": "ordered_list",
             },
             {
                 "name": "test paragraph, three lines, out of order",
                 "params": "1. This is a list item\n3. This is a third list item\n2. This is another list item",
-                "want": "paragraph"
+                "want": "paragraph",
             },
             {
                 "name": "test paragraph, three lines, missing prefix",
                 "params": "1. This is a list item\nThis is a third list item\n2. This is another list item",
-                "want": "paragraph"
+                "want": "paragraph",
             },
         ]
 
@@ -206,7 +207,7 @@ class TestMarkdownToHTMLNode(unittest.TestCase):
         ]
 
         for case in cases:
-            got =  markdown_to_html_node(case["param"])
+            got = markdown_to_html_node(case["param"])
             self.assertEqual(got.to_html(), case["want"], f"case: {case['param']}")
 
     def test_markdown_to_html_node_from_file(self):

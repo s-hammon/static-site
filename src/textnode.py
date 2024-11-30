@@ -1,8 +1,9 @@
 from src.htmlnode import LeafNode
 from src.nodetypes import TextType
 
+
 class TextNode:
-    def __init__(self, text: str, text_type: str, url: str=None):
+    def __init__(self, text: str, text_type: str, url: str = None):
         self.text: str = text
 
         try:
@@ -11,10 +12,14 @@ class TextNode:
             raise ValueError("Unsupported text type")
 
         self.url: str = url
-    
-    def __eq__(self, other: 'TextNode') -> bool:
-        return self.text == other.text and self.text_type == other.text_type and self.url == other.url
-    
+
+    def __eq__(self, other: "TextNode") -> bool:
+        return (
+            self.text == other.text
+            and self.text_type == other.text_type
+            and self.url == other.url
+        )
+
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.text}, {self.text_type.value}, {self.url})"
 
@@ -36,7 +41,7 @@ def text_node_to_html_node(text_node: TextNode) -> LeafNode:
             return LeafNode(value, "a", {"href": url})
         case "image":
             return LeafNode("", "img", {"src": url, "alt": value})
-        case "strike": 
+        case "strike":
             return LeafNode(value, "s", None)
         case _:
             raise ValueError("Unsupported text type")
