@@ -7,6 +7,7 @@ from src.converter import (
     extract_markdown_images,
     extract_markdown_links,
 )
+from src.nodetypes import TextType
 from src.textnode import TextNode
 
 
@@ -20,7 +21,7 @@ class TestSplitNodesDelimiter(unittest.TestCase):
                         TextNode("This is text with a **bold** word", "text")
                     ],
                     "delimiter": "**",
-                    "text_type": "bold",
+                    "text_type": TextType.BOLD,
                 },
                 "want": [
                     TextNode("This is text with a ", "text"),
@@ -38,7 +39,7 @@ class TestSplitNodesDelimiter(unittest.TestCase):
                         )
                     ],
                     "delimiter": "**",
-                    "text_type": "bold",
+                    "text_type": TextType.BOLD,
                 },
                 "want": [
                     TextNode("This is text with a ", "text"),
@@ -53,7 +54,7 @@ class TestSplitNodesDelimiter(unittest.TestCase):
                 "params": {
                     "old_nodes": [TextNode("**bold only**", "bold")],
                     "delimiter": "**",
-                    "text_type": "bold",
+                    "text_type": TextType.BOLD,
                 },
                 "want": [TextNode("**bold only**", "bold")],
             },
@@ -65,7 +66,7 @@ class TestSplitNodesDelimiter(unittest.TestCase):
                         TextNode("This is text with an *italicized* word", "text"),
                     ],
                     "delimiter": "*",
-                    "text_type": "italic",
+                    "text_type": TextType.ITALIC,
                 },
                 "want": [
                     TextNode("This is text with a **bold** word", "text"),
@@ -81,7 +82,7 @@ class TestSplitNodesDelimiter(unittest.TestCase):
                         TextNode("This is a paragraph with *italics*", "text")
                     ],
                     "delimiter": "*",
-                    "text_type": "italic",
+                    "text_type": TextType.ITALIC,
                 },
                 "want": [
                     TextNode("This is a paragraph with ", "text"),
@@ -95,7 +96,7 @@ class TestSplitNodesDelimiter(unittest.TestCase):
                         TextNode("~~This is a strike through sentence~~", "text")
                     ],
                     "delimiter": "~~",
-                    "text_type": "strike",
+                    "text_type": TextType.STRIKE,
                 },
                 "want": [
                     TextNode("This is a strike through sentence", "strike"),
@@ -113,7 +114,9 @@ class TestSplitNodesDelimiter(unittest.TestCase):
             ValueError, msg="case: test invalid markdown syntax (bold)"
         ):
             split_nodes_delimiter(
-                [TextNode("This is text with a **bold word", "text")], "**", "bold"
+                [TextNode("This is text with a **bold word", "text")],
+                "**",
+                TextType.BOLD,
             )
 
 
@@ -198,7 +201,7 @@ class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
                     ],
                     "extract_func": extract_markdown_images,
                     "md_format": "![{}]({})",
-                    "text_type": "image",
+                    "text_type": TextType.IMAGE,
                 },
                 "want": [
                     TextNode("This is text with a ", "text"),
@@ -216,7 +219,7 @@ class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
                     ],
                     "extract_func": extract_markdown_images,
                     "md_format": "![{}]({})",
-                    "text_type": "image",
+                    "text_type": TextType.IMAGE,
                 },
                 "want": [
                     TextNode("This is text with a ", "text"),
@@ -231,7 +234,7 @@ class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
                     "old_nodes": [TextNode(f"{rick_roll} is an ancient meme", "text")],
                     "extract_func": extract_markdown_images,
                     "md_format": "![{}]({})",
-                    "text_type": "image",
+                    "text_type": TextType.IMAGE,
                 },
                 "want": [
                     TextNode("rick roll", "image", "https://i.imgur.com/aKaOqIh.gif"),
@@ -247,7 +250,7 @@ class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
                     ],
                     "extract_func": extract_markdown_images,
                     "md_format": "![{}]({})",
-                    "text_type": "image",
+                    "text_type": TextType.IMAGE,
                 },
                 "want": [
                     TextNode("This is normal text", "text"),
@@ -266,7 +269,7 @@ class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
                     ],
                     "extract_func": extract_markdown_links,
                     "md_format": "[{}]({})",
-                    "text_type": "link",
+                    "text_type": TextType.LINK,
                 },
                 "want": [
                     TextNode("This is text with a ", "text"),
@@ -285,7 +288,7 @@ class TestExtractMarkdownImagesAndLinks(unittest.TestCase):
                     ],
                     "extract_func": extract_markdown_links,
                     "md_format": "[{}]({})",
-                    "text_type": "link",
+                    "text_type": TextType.LINK,
                 },
                 "want": [
                     TextNode("This is normal text", "text"),

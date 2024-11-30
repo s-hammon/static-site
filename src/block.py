@@ -65,6 +65,10 @@ def convert_block_to_html_node(block: str) -> HTMLNode:
             return ParentNode(
                 [text_node_to_html_node(node) for node in text_to_textnodes(block)], "p"
             )
+        case _:
+            return ParentNode(
+                [text_node_to_html_node(node) for node in text_to_textnodes(block)], "p"
+            )
 
 
 def markdown_to_blocks(markdown: str) -> List[str]:
@@ -94,6 +98,8 @@ def check_ordered_list(lines: List[str]) -> bool:
 
 
 def header_markdown_to_html(markdown: str) -> Tuple[str, str]:
+    # Returns the tag and value of the header
+    # If no match is found, it returns h1 and the original markdown
     match = re.match(r"^(#{1,6}) (.*)", markdown)
 
     if match:
@@ -101,4 +107,4 @@ def header_markdown_to_html(markdown: str) -> Tuple[str, str]:
         if depth <= 6:
             return f"h{depth}", match.group(2)
 
-    return None
+    return "h1", markdown

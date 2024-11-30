@@ -1,18 +1,18 @@
-from typing import Dict, List
+from typing import Any, Dict, List, Optional
 
 
 class HTMLNode:
     def __init__(
         self,
-        tag: str = None,
-        value: str = None,
-        children: list = None,
-        props: dict = None,
+        tag: Optional[str] = None,
+        value: Optional[str] = None,
+        children: Optional[List["HTMLNode"]] = None,
+        props: Optional[Dict[str, str]] = None,
     ):
         self.tag: str = tag or ""
         self.value: str = value or ""
-        self.children: list["HTMLNode"] = children or []
-        self.props: Dict[str:str] = props or {}
+        self.children: List["HTMLNode"] = children or []
+        self.props: Dict[str, str] = props or {}
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.tag}, {self.value}, {self.children}, {self.props})"
@@ -25,7 +25,12 @@ class HTMLNode:
 
 
 class ParentNode(HTMLNode):
-    def __init__(self, children: List[HTMLNode], tag: str = None, props: dict = None):
+    def __init__(
+        self,
+        children: List[HTMLNode],
+        tag: Optional[str] = None,
+        props: Optional[Dict[str, str]] = None,
+    ):
         super().__init__(tag, None, children, props)
 
     def to_html(self) -> str:
@@ -46,18 +51,25 @@ class ParentNode(HTMLNode):
 
 
 class LeafNode(HTMLNode):
-    def __init__(self, value: str, tag: str = None, props: dict = None):
+    def __init__(
+        self,
+        value: str,
+        tag: Optional[str] = None,
+        props: Optional[Dict[str, str]] = None,
+    ):
         super().__init__(tag, value, None, props)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.value}, {self.tag}, {self.props})"
 
-    def __eq__(self, other: "LeafNode") -> bool:
-        return (
-            self.value == other.value
-            and self.tag == other.tag
-            and self.props == other.props
-        )
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, LeafNode):
+            return (
+                self.value == other.value
+                and self.tag == other.tag
+                and self.props == other.props
+            )
+        return False
 
     def to_html(self) -> str:
         if self.value == "" and self.tag != "img":

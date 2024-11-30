@@ -1,9 +1,11 @@
+from typing import Any, Optional
+
 from src.htmlnode import LeafNode
 from src.nodetypes import TextType
 
 
 class TextNode:
-    def __init__(self, text: str, text_type: str, url: str = None):
+    def __init__(self, text: str, text_type: str, url: Optional[str] = None):
         self.text: str = text
 
         try:
@@ -11,14 +13,16 @@ class TextNode:
         except ValueError:
             raise ValueError("Unsupported text type")
 
-        self.url: str = url
+        self.url: str = url or ""
 
-    def __eq__(self, other: "TextNode") -> bool:
-        return (
-            self.text == other.text
-            and self.text_type == other.text_type
-            and self.url == other.url
-        )
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, TextNode):
+            return (
+                self.text == other.text
+                and self.text_type == other.text_type
+                and self.url == other.url
+            )
+        return False
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.text}, {self.text_type.value}, {self.url})"

@@ -6,7 +6,7 @@ from src.nodetypes import TextType
 
 
 def text_to_textnodes(text: str) -> List[TextNode]:
-    nodes = [TextNode(text, TextType.TEXT)]
+    nodes = [TextNode(text, TextType.TEXT.value)]
     nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
     nodes = split_nodes_delimiter(nodes, "*", TextType.ITALIC)
     nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
@@ -43,7 +43,7 @@ def split_nodes_delimiter(
                 new_nodes.append(TextNode(predicate, node.text_type.value))
                 text = text.replace(predicate, "")
 
-            new_nodes.append(TextNode(delim, text_type))
+            new_nodes.append(TextNode(delim, text_type.value))
             text = text.replace(delim_md, "", 1)
 
         if text:
@@ -77,7 +77,7 @@ def split_nodes_embed(
                 new_nodes.append(TextNode(predicate, node.text_type.value))
                 text = text.replace(predicate, "")
 
-            new_nodes.append(TextNode(embed[0], text_type, embed[1]))
+            new_nodes.append(TextNode(embed[0], text_type.value, embed[1]))
             text = text.replace(embed_md, "")
 
     return new_nodes
