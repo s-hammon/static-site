@@ -1,9 +1,9 @@
 import re
 from typing import List, Tuple
 
-from converter import text_to_textnodes
-from htmlnode import HTMLNode, LeafNode, ParentNode
-from textnode import text_node_to_html_node
+from src.converter import text_to_textnodes
+from src.htmlnode import HTMLNode, LeafNode, ParentNode
+from src.textnode import text_node_to_html_node
 
 def markdown_to_html_node(markdown: str) -> HTMLNode:
     blocks = markdown_to_blocks(markdown)

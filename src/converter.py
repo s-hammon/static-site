@@ -1,8 +1,8 @@
 import re
 from typing import Callable, List
 
-from textnode import TextNode
-from nodetypes import TextType
+from src.textnode import TextNode
+from src.nodetypes import TextType
 
 
 def text_to_textnodes(text: str) -> List[TextNode]:

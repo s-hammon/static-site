@@ -1,6 +1,5 @@
-from htmlnode import LeafNode
-
-from nodetypes import TextType
+from src.htmlnode import LeafNode
+from src.nodetypes import TextType
 
 class TextNode:
     def __init__(self, text: str, text_type: str, url: str=None):

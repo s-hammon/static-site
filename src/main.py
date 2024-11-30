@@ -1,7 +1,7 @@
 import os
 import shutil
 
-import app 
+import src.app as app
 
 def main():
     refresh_dir('public')

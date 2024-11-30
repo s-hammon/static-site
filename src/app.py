@@ -1,6 +1,6 @@
 import os
 
-from block import (
+from src.block import (
     block_to_block_type, 
     header_markdown_to_html, 
     markdown_to_blocks,

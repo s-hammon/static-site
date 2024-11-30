@@ -1,13 +1,13 @@
 import unittest
 
-from converter import (
+from src.converter import (
     split_nodes_delimiter,
     split_nodes_embed,
     text_to_textnodes,
     extract_markdown_images,
     extract_markdown_links
 ) 
-from textnode import TextNode
+from src.textnode import TextNode
 
 
 class TestSplitNodesDelimiter(unittest.TestCase):
