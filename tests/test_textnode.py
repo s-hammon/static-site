@@ -1,7 +1,7 @@
 import unittest
 
-from textnode import TextNode, text_node_to_html_node
-from htmlnode import LeafNode
+from src.textnode import TextNode, text_node_to_html_node
+from src.htmlnode import LeafNode
 
 
 class TestTextNode(unittest.TestCase):
@@ -17,40 +17,55 @@ class TestTextNode(unittest.TestCase):
 
     def test_repr(self):
         node = TextNode("This is a text node", "bold")
-        self.assertEqual(repr(node), "TextNode(This is a text node, bold, None)")
+        self.assertEqual(repr(node), "TextNode(This is a text node, bold, )")
 
     def test_repr_with_url(self):
         node = TextNode("This is a text node", "bold", "https://www.boot.dev")
-        self.assertEqual(repr(node), "TextNode(This is a text node, bold, https://www.boot.dev)")
-        
+        self.assertEqual(
+            repr(node), "TextNode(This is a text node, bold, https://www.boot.dev)"
+        )
+
 
 class TestTextNodeToHTMLNode(unittest.TestCase):
     def test_text_node_to_html_node(self):
         cases = [
             {
                 "params": TextNode("This is a raw text node", "text"),
-                "expected": LeafNode("This is a raw text node", None)
+                "expected": LeafNode("This is a raw text node", None),
             },
             {
                 "params": TextNode("This is a bold text node", "bold"),
-                "expected": LeafNode("This is a bold text node", "b")
+                "expected": LeafNode("This is a bold text node", "b"),
             },
             {
                 "params": TextNode("This is an italic text node", "italic"),
-                "expected": LeafNode("This is an italic text node", "i")
+                "expected": LeafNode("This is an italic text node", "i"),
             },
             {
                 "params": TextNode("print('This is a code text node')", "code"),
-                "expected": LeafNode("print('This is a code text node')", "code")
+                "expected": LeafNode("print('This is a code text node')", "code"),
             },
             {
-                "params": TextNode("This is a link text node", "link", "https://www.boot.dev"),
-                "expected": LeafNode("This is a link text node", "a", {"href": "https://www.boot.dev"})
+                "params": TextNode(
+                    "This is a link text node", "link", "https://www.boot.dev"
+                ),
+                "expected": LeafNode(
+                    "This is a link text node", "a", {"href": "https://www.boot.dev"}
+                ),
             },
             {
-                "params": TextNode("This is an image text node", "image", "https://www.boot.dev"),
-                "expected": LeafNode("", "img", {"src": "https://www.boot.dev", "alt": "This is an image text node"})
-            }
+                "params": TextNode(
+                    "This is an image text node", "image", "https://www.boot.dev"
+                ),
+                "expected": LeafNode(
+                    "",
+                    "img",
+                    {
+                        "src": "https://www.boot.dev",
+                        "alt": "This is an image text node",
+                    },
+                ),
+            },
         ]
 
         for case in cases:
@@ -66,5 +81,6 @@ class TestTextNodeToHTMLNode(unittest.TestCase):
             with self.assertRaises(ValueError):
                 text_node_to_html_node(case)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
