@@ -1,1 +1,3 @@
-python3 -m unittest discover -v -s tests
+coverage erase
+coverage run -m unittest discover -v -s tests
+coverage html

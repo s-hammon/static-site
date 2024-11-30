@@ -20,7 +20,7 @@ def extract_title(markdown: str) -> str:
 
 
 def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
-    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
+    print(f"Generating page from {from_path} to {dest_path} using {template_path}") # pragma: no cover
 
     markdown = load_file(from_path)
     html = markdown_to_html_node(markdown).to_html()
@@ -34,8 +34,8 @@ def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
 
 def generate_pages_recursive(
     dir_path_content: str, template_path: str, dir_path_public: str
-) -> None:
-    check_path(dir_path_public)
+) -> None: # pragma: no cover
+    check_path(dir_path_public) 
     for file in os.listdir(dir_path_content):
         content_path = os.path.join(dir_path_content, file)
         public_path = os.path.join(dir_path_public, file.replace(".md", ".html"))
@@ -48,7 +48,7 @@ def generate_pages_recursive(
             generate_page(content_path, template_path, public_path)
 
 
-def check_path(path: str) -> None:
+def check_path(path: str) -> None: # pragma: no cover
     if not os.path.exists(path):
         os.mkdir(path)
         print(f"Directory {path} created")
@@ -64,7 +64,7 @@ def save_file(path: str, content: str) -> None:
         f.write(content)
 
 
-def run():
+def run(): # pragma: no cover
     try:
         generate_pages_recursive("content", "template.html", "public")
     except Exception as e:

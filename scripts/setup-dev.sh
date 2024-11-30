@@ -8,3 +8,13 @@ else
     INSTALLED_RUFF_VERSION=$(ruff --version)
     echo "Ruff version: $INSTALLED_RUFF_VERSION (already installed)"
 fi
+
+# Install the Coverage.py package
+# TODO: get pip executable path
+if [ ! -x "$(command -v coverage)" ]; then
+    pip install coverage
+else
+    # get installed Coverage.py version
+    INSTALLED_COVERAGE_VERSION=$(pip show coverage | grep Version | awk '{print $2}')
+    echo "Coverage.py version: $INSTALLED_COVERAGE_VERSION (already installed)"
+fi

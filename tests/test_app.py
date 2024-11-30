@@ -1,6 +1,7 @@
+import os
 import unittest
 
-from src.app import extract_title
+from src.app import extract_title, generate_page, check_path
 
 
 class TestExtractTitle(unittest.TestCase):
@@ -32,3 +33,22 @@ class TestExtractTitle(unittest.TestCase):
         for case in cases:
             with self.assertRaises(ValueError):
                 extract_title(case)
+
+
+class TestGeneratePage(unittest.TestCase):
+    def test_generate_page(self):
+        params = {
+            "from_path": "tests/test_data/test.md",
+            "template_path": "template.html",
+            "dest_path": "tests/test_data/test.html",
+        }
+
+        check_path("tests/test_data")
+        try:
+            os.remove(params["dest_path"])
+        except FileNotFoundError:
+            pass
+
+        generate_page(**params)
+
+        self.assertTrue(os.path.exists(params["dest_path"]))
